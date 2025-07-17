@@ -26,7 +26,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">
-                👤 <?= htmlspecialchars($_SESSION['cliente']['nombre']) ?>
+                👤 <?=($_SESSION['cliente']['nombre']) ?>
               </a>
             </li>
             <li class="nav-item">

@@ -41,30 +41,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Iniciar sesión</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
-<body class="bg-light">
-<div class="container py-5">
-    <h2 class="mb-4">Iniciar sesión</h2>
+<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
 
-    <?php if ($error): ?>
-        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
+    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4 text-primary fw-bold">Iniciar sesión</h2>
 
-    <form method="POST">
-        <div class="mb-3">
-            <label>Correo electrónico</label>
-            <input type="email" name="correo" class="form-control" required>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?=($error) ?></div>
+        <?php endif; ?>
+
+        <form method="POST" novalidate>
+            <div class="mb-3">
+                <label for="correo" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="correo" name="correo" required autofocus>
+            </div>
+
+            <div class="mb-3">
+                <label for="clave" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="clave" name="clave" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-semibold">Iniciar sesión</button>
+        </form>
+
+        <div class="mt-3 text-center">
+            <a href="registro.php" class="text-decoration-none text-primary fw-semibold">¿No tienes cuenta? Regístrate</a>
         </div>
-        <div class="mb-3">
-            <label>Contraseña</label>
-            <input type="password" name="clave" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-        <a href="registro.php" class="btn btn-link">¿No tienes cuenta? Regístrate</a>
-    </form>
-</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

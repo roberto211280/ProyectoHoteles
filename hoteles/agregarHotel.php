@@ -20,6 +20,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $costo = $_POST['costo'] ?? '';
         $autor = trim($_POST['autor'] ?? '');
         $publicar = isset($_POST['publicar']) ? (int)$_POST['publicar'] : 0;
+        $tiposHabitacion = trim($_POST['tipos_habitacion'] ?? '');
+        $wifi = isset($_POST['wifi']) ? 1 : 0;
+        $piscina = isset($_POST['piscina']) ? 1 : 0;
+        $parking = isset($_POST['parking']) ? 1 : 0;
+        $gimnasio = isset($_POST['gimnasio']) ? 1 : 0;
+        $restaurante = isset($_POST['restaurante']) ? 1 : 0;
+        $servicio_habitaciones = isset($_POST['servicio_habitaciones']) ? 1 : 0;
+
+        if ($tiposHabitacion === '') {
+            throw new Exception("Debe ingresar al menos un tipo de habitación.");
+        }
+
 
         if (empty($titulo) || empty($descripcion) || empty($ubicacion) || empty($provincia) || $costo === '') {
             throw new Exception("Todos los campos obligatorios deben ser completados");
@@ -34,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Preparar datos para enviar a la clase
+      // Preparar datos para enviar a la clase
         $datos = [
             'titulo' => $titulo,
             'descripcion' => $descripcion,
@@ -41,8 +54,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'provincia' => $provincia,
             'costo' => $costo,
             'autor' => $autor,
-            'publicar' => $publicar
+            'publicar' => $publicar,
+            'tipos_habitacion' => $tiposHabitacion,
+            'wifi' => $wifi,
+            'piscina' => $piscina,
+            'parking' => $parking,
+            'gimnasio' => $gimnasio,
+            'restaurante' => $restaurante,
+            'servicio_habitaciones' => $servicio_habitaciones,
         ];
+
+
 
         $resultado = $hotel->agregar($datos, $_FILES['imagenes']);
 
@@ -144,7 +166,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                    value="<?= htmlspecialchars($_POST['autor'] ?? '') ?>"
                                    placeholder="Nombre del autor o fuente">
                         </div>
+                        <div class="mb-3">
+                            <label for="tipos_habitacion" class="form-label">Tipos de habitación (separados por coma)</label>
+                            <input type="text" name="tipos_habitacion" id="tipos_habitacion" class="form-control" placeholder="Ejemplo: Sencilla,Doble,Suite" required>
+                            <small class="form-text text-muted">Ingrese los tipos separados por coma</small>
+                        </div>
+                        <div class="d-flex flex-wrap gap-3 align-items-center">
+                            <div class="form-check d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input" id="wifi" name="wifi" value="1" onchange="toggleInfo('wifi-info')">
+                                <label class="form-check-label ms-1" for="wifi">Wifi</label>
+                            </div>
 
+                            <div class="form-check d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input" id="piscina" name="piscina" value="1" onchange="toggleInfo('piscina-info')">
+                                <label class="form-check-label ms-1" for="piscina">Piscina</label>
+                                
+                            </div>
+
+                            <div class="form-check d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input" id="parking" name="parking" value="1" onchange="toggleInfo('parking-info')">
+                                <label class="form-check-label ms-1" for="parking">Parking</label>
+                                
+                            </div>
+
+                            <div class="form-check d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input" id="gimnasio" name="gimnasio" value="1" onchange="toggleInfo('gimnasio-info')">
+                                <label class="form-check-label ms-1" for="gimnasio">Gimnasio</label>
+                                
+                            </div>
+
+                            <div class="form-check d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input" id="restaurante" name="restaurante" value="1" onchange="toggleInfo('restaurante-info')">
+                                <label class="form-check-label ms-1" for="restaurante">Restaurante</label>
+                            
+                            </div>
+
+                            <div class="form-check d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input" id="servicio_habitaciones" name="servicio_habitaciones" value="1" onchange="toggleInfo('servicio_habitaciones-info')">
+                                <label class="form-check-label ms-1" for="servicio_habitaciones">Servicio de habitaciones</label>
+                            
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Imágenes del Hotel <span class="text-danger">*</span></label>
                             <input type="file" name="imagenes[]" class="form-control" multiple required
@@ -211,6 +273,17 @@ document.getElementById('imageInput').addEventListener('change', function(e) {
 function removeImage(btn) {
     btn.parentElement.remove();
 }
+
+function toggleInfo(id) {
+  const el = document.getElementById(id);
+  const checkbox = document.querySelector(`input[id="${id.replace('-info','')}"]`);
+  if (checkbox.checked) {
+    el.style.display = 'inline';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
 </script>
 
 <?php include '../includes/footer.php'; ?>

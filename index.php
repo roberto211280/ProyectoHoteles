@@ -31,7 +31,7 @@ try {
                 <h1 class="text-center mb-4">Hoteles Disponibles</h1>
                 
                 <?php if (isset($error)): ?>
-                    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                    <div class="alert alert-danger"><?= ($error) ?></div>
                 <?php endif; ?>
                 
                 <?php if (empty($hoteles)): ?>
@@ -46,10 +46,10 @@ try {
                                 <div class="card shadow-sm h-100">
                                     <!-- Imagen del hotel -->
                                     <?php if ($hotel['imagen_principal']): ?>
-                                        <img src="<?= htmlspecialchars($hotel['imagen_principal']) ?>" 
+                                        <img src="<?= ($hotel['imagen_principal']) ?>" 
                                              class="card-img-top" 
                                              style="height: 200px; object-fit: cover;"
-                                             alt="<?= htmlspecialchars($hotel['titulo']) ?>">
+                                             alt="<?= ($hotel['titulo']) ?>">
                                     <?php else: ?>
                                         <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
                                              style="height: 200px;">
@@ -58,21 +58,21 @@ try {
                                     <?php endif; ?>
                                     
                                     <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title"><?= htmlspecialchars($hotel['titulo']) ?></h5>
+                                        <h5 class="card-title"><?= ($hotel['titulo']) ?></h5>
                                         
                                         <div class="mb-2">
                                             <small class="text-muted">
-                                                📍 <?= htmlspecialchars($hotel['ubicacion']) ?>, <?= htmlspecialchars($hotel['provincia']) ?>
+                                                📍 <?= ($hotel['ubicacion']) ?>, <?= ($hotel['provincia']) ?>
                                             </small>
                                         </div>
                                         
                                         <p class="card-text flex-grow-1">
-                                            <?= htmlspecialchars(substr($hotel['descripcion'], 0, 100)) ?>
+                                            <?= (substr($hotel['descripcion'], 0, 100)) ?>
                                             <?= strlen($hotel['descripcion']) > 100 ? '...' : '' ?>
                                         </p>
                                         
                                         <?php if ($hotel['autor']): ?>
-                                            <small class="text-muted mb-2">Por: <?= htmlspecialchars($hotel['autor']) ?></small>
+                                            <small class="text-muted mb-2">Por: <?= ($hotel['autor']) ?></small>
                                         <?php endif; ?>
                                         
                                         <div class="d-flex justify-content-between align-items-center mt-auto">

@@ -43,20 +43,30 @@ $reservas = $reservaModel->obtenerPorCliente($clienteId);
                         <th>Entrada</th>
                         <th>Salida</th>
                         <th>Personas</th>
+                        <th>Costo</th>
+
                         <th>Reservado el</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($reservas as $reserva): ?>
+                        <?php
+                            $fechaEntrada = new DateTime($reserva['fecha_entrada']);
+                            $fechaSalida = new DateTime($reserva['fecha_salida']);
+                            $dias = $fechaEntrada->diff($fechaSalida)->days;
+                            $costoTotal = $dias * $reserva['costo'];
+                        ?>
                         <tr>
-                            <td><?= htmlspecialchars($reserva['titulo']) ?></td>
-                            <td><?= htmlspecialchars($reserva['ubicacion']) ?>, <?= htmlspecialchars($reserva['provincia']) ?></td>
-                            <td><?= date('d/m/Y', strtotime($reserva['fecha_entrada'])) ?></td>
-                            <td><?= date('d/m/Y', strtotime($reserva['fecha_salida'])) ?></td>
-                            <td><?= $reserva['personas'] ?></td>
+                            <td><?= ($reserva['titulo']) ?></td>
+                            <td><?= ($reserva['ubicacion']) ?>, <?= ($reserva['provincia']) ?></td>
+                            <td><?= $fechaEntrada->format('d/m/Y') ?></td>
+                            <td><?= $fechaSalida->format('d/m/Y') ?></td>
+                            <td><?= (int)$reserva['personas'] ?></td>
+                            <td><?= number_format($costoTotal, 2, ',', '.') ?> $</td> <!-- Aquí el costo total -->
                             <td><?= date('d/m/Y H:i', strtotime($reserva['fecha_reserva'])) ?></td>
                         </tr>
                     <?php endforeach; ?>
+
                 </tbody>
             </table>
         </div>

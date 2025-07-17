@@ -10,7 +10,12 @@ class Hotel {
         try {
             $this->pdo->beginTransaction();
 
-            $stmt = $this->pdo->prepare("INSERT INTO hoteles (titulo, descripcion, ubicacion, provincia, costo, autor, publicar, activo) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
+            $stmt = $this->pdo->prepare("
+                INSERT INTO hoteles 
+                (titulo, descripcion, ubicacion, provincia, costo, autor, publicar, tipos_habitacion, wifi, piscina, parking, gimnasio, restaurante, servicio_habitaciones, activo) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+            ");
+
             $stmt->execute([
                 $datos['titulo'],
                 $datos['descripcion'],
@@ -18,10 +23,19 @@ class Hotel {
                 $datos['provincia'],
                 $datos['costo'],
                 $datos['autor'],
-                $datos['publicar']
+                $datos['publicar'],
+                $datos['tipos_habitacion'],   
+                $datos['wifi'],
+                $datos['piscina'],
+                $datos['parking'],
+                $datos['gimnasio'],
+                $datos['restaurante'],
+                $datos['servicio_habitaciones']
             ]);
 
             $hotel_id = $this->pdo->lastInsertId();
+
+            // Resto del código de manejo de imágenes sin cambios
             $upload_dir = "../uploads/hoteles/" . $hotel_id . "/";
             if (!file_exists($upload_dir)) {
                 mkdir($upload_dir, 0755, true);
@@ -29,7 +43,6 @@ class Hotel {
 
             $extensiones_permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
             $max_size = 5 * 1024 * 1024;
-
             $imagenes_procesadas = 0;
 
             foreach ($imagenes['tmp_name'] as $key => $tmp_name) {
@@ -71,6 +84,8 @@ class Hotel {
             ];
         }
     }
+
+
 
     public function darDeBaja($id) {
         $stmt = $this->pdo->prepare("UPDATE hoteles SET activo = 0 WHERE id = ?");
@@ -117,7 +132,7 @@ class Hotel {
     unset($hotel); // Limpia la referencia del foreach
 
     return $hoteles;
-}
+    }
 
     // Obtener hotel publicado y activo por ID
     public function obtenerHotelPorId($hotelId) {

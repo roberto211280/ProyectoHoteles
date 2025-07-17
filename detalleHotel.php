@@ -36,7 +36,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($hotel['titulo']) ?> - Detalles</title>
+    <title><?= ($hotel['titulo']) ?> - Detalles</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
@@ -45,7 +45,7 @@ try {
 
     <div class="container mt-4">
         <?php if (isset($error)): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <div class="alert alert-danger"><?= ($error) ?></div>
         <?php else: ?>
             <div class="row">
                 <!-- Columna izquierda: Imágenes -->
@@ -56,10 +56,10 @@ try {
                             <div class="carousel-inner">
                                 <?php foreach ($imagenes as $index => $imagen): ?>
                                     <div class="carousel-item <?= $index == 0 ? 'active' : '' ?>">
-                                        <img src="<?= htmlspecialchars($imagen['ruta']) ?>" 
+                                        <img src="<?= ($imagen['ruta']) ?>" 
                                              class="d-block w-100" 
                                              style="height: 400px; object-fit: cover;"
-                                             alt="<?= htmlspecialchars($hotel['titulo']) ?>">
+                                             alt="<?= ($hotel['titulo']) ?>">
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -79,7 +79,7 @@ try {
                             <div class="row">
                                 <?php foreach ($imagenes as $index => $imagen): ?>
                                     <div class="col-2 mb-2">
-                                        <img src="<?= htmlspecialchars($imagen['ruta']) ?>" 
+                                        <img src="<?= ($imagen['ruta']) ?>" 
                                              class="img-thumbnail w-100" 
                                              style="height: 80px; object-fit: cover; cursor: pointer;"
                                              onclick="goToSlide(<?= $index ?>)">
@@ -99,11 +99,11 @@ try {
                 <div class="col-lg-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h1 class="card-title"><?= htmlspecialchars($hotel['titulo']) ?></h1>
+                            <h1 class="card-title"><?= ($hotel['titulo']) ?></h1>
                             
                             <div class="mb-3">
                                 <strong>📍 Ubicación:</strong><br>
-                                <?= htmlspecialchars($hotel['ubicacion']) ?>, <?= htmlspecialchars($hotel['provincia']) ?>
+                                <?= ($hotel['ubicacion']) ?>, <?= ($hotel['provincia']) ?>
                             </div>
                             
                             <div class="mb-3">
@@ -111,11 +111,30 @@ try {
                                 <span class="fs-2 fw-bold text-primary">$<?= number_format($hotel['costo'], 2) ?></span>
                                 <small class="text-muted">por noche</small>
                             </div>
+                            <div class="mb-3">
+                                <strong>Servicios:</strong><br>
+                                <?php 
+                                $servicios = [];
+                                if (!empty($hotel['wifi'])) $servicios[] = 'WiFi';
+                                if (!empty($hotel['piscina'])) $servicios[] = 'Piscina';
+                                if (!empty($hotel['parking'])) $servicios[] = 'Parking';
+                                if (!empty($hotel['gimnasio'])) $servicios[] = 'Gimnasio';
+                                if (!empty($hotel['restaurante'])) $servicios[] = 'Restaurante';
+                                if (!empty($hotel['servicio_habitaciones'])) $servicios[] = 'Servicio de habitaciones';
+
+                                if (count($servicios) > 0) {
+                                    echo implode(', ', $servicios);
+                                } else {
+                                    echo 'No hay servicios disponibles';
+                                }
+                                ?>
+                            </div>
+
                             
                             <?php if ($hotel['autor']): ?>
                                 <div class="mb-3">
                                     <strong>👤 Publicado por:</strong><br>
-                                    <?= htmlspecialchars($hotel['autor']) ?>
+                                    <?= ($hotel['autor']) ?>
                                 </div>
                             <?php endif; ?>
                             
@@ -144,29 +163,29 @@ try {
 
             
             <!-- Descripción completa -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h3 class="card-title">📝 Descripción</h3>
-                            <p class="card-text lh-lg">
-                                <?= nl2br(htmlspecialchars($hotel['descripcion'])) ?>
-                            </p>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h3 class="card-title">📝 Descripción</h3>
+                                <p class="card-text lh-lg">
+                                    <?= nl2br(($hotel['descripcion'])) ?>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Botón de regreso -->
-            <div class="row mt-4 mb-5">
-                <div class="col-12 text-center">
-                    <a href="index.php" class="btn btn-secondary">
-                        ← Volver a la lista de hoteles
-                    </a>
+                
+                <!-- Botón de regreso -->
+                <div class="row mt-4 mb-5">
+                    <div class="col-12 text-center">
+                        <a href="index.php" class="btn btn-secondary">
+                            ← Volver a la lista de hoteles
+                        </a>
+                    </div>
                 </div>
-            </div>
-        <?php endif; ?>
-    </div>
+            <?php endif; ?>
+        </div>
     </div>
     <?php include 'includes/footer.php'; ?>
                             

@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="mb-3">
             <label for="email" class="form-label">Correo electrónico:</label>
             <input type="email" class="form-control" name="email" 
-                   value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>" required>
+                   value="<?= isset($_POST['email']) ? ($_POST['email']) : '' ?>" required>
         </div>
         
         <div class="mb-3">
