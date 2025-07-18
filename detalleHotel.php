@@ -93,6 +93,18 @@ try {
                             <span class="text-muted">Sin imágenes disponibles</span>
                         </div>
                     <?php endif; ?>
+                    <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h3 class="card-title">📝 Descripción</h3>
+                                <p class="card-text lh-lg">
+                                    <?= nl2br(($hotel['descripcion'])) ?>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 </div>
                 
                 <!-- Columna derecha: Información -->
@@ -159,23 +171,7 @@ try {
 
                         </div>
                     </div>
-                </div>
-
-            
-            <!-- Descripción completa -->
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h3 class="card-title">📝 Descripción</h3>
-                                <p class="card-text lh-lg">
-                                    <?= nl2br(($hotel['descripcion'])) ?>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
+                </div>   
                 <!-- Botón de regreso -->
                 <div class="row mt-4 mb-5">
                     <div class="col-12 text-center">

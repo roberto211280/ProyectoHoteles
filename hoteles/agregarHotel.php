@@ -69,11 +69,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $resultado = $hotel->agregar($datos, $_FILES['imagenes']);
 
         if ($resultado['ok']) {
-            $mensaje = $resultado['mensaje'];
-            $_POST = []; // limpiar formulario
-        } else {
-            throw new Exception($resultado['error']);
+            $_SESSION['mensaje'] = $resultado['mensaje'];
+            header("Location: menu.php");
+            exit(); 
         }
+
 
     } catch (Exception $e) {
         $error = "❌ Error: " . $e->getMessage();
@@ -103,14 +103,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card-body">
                     <?php if ($mensaje): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <?= htmlspecialchars($mensaje) ?>
+                            <?= ($mensaje) ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     <?php endif; ?>
 
                     <?php if ($error): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?= htmlspecialchars($error) ?>
+                            <?= ($error) ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     <?php endif; ?>
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="mb-3">
                                     <label class="form-label">Título del Hotel <span class="text-danger">*</span></label>
                                     <input name="titulo" class="form-control" required 
-                                           value="<?= htmlspecialchars($_POST['titulo'] ?? '') ?>">
+                                           value="<?= ($_POST['titulo'] ?? '') ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
                                         <input name="costo" class="form-control" type="number" step="0.01" min="0" required
-                                               value="<?= htmlspecialchars($_POST['costo'] ?? '') ?>">
+                                               value="<?= ($_POST['costo'] ?? '') ?>">
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="mb-3">
                             <label class="form-label">Descripción <span class="text-danger">*</span></label>
                             <textarea name="descripcion" class="form-control" rows="4" required 
-                                      placeholder="Describe las características y servicios del hotel..."><?= htmlspecialchars($_POST['descripcion'] ?? '') ?></textarea>
+                                      placeholder="Describe las características y servicios del hotel..."><?= ($_POST['descripcion'] ?? '') ?></textarea>
                         </div>
 
                         <div class="row">
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="mb-3">
                                     <label class="form-label">Ubicación <span class="text-danger">*</span></label>
                                     <input name="ubicacion" class="form-control" required 
-                                           value="<?= htmlspecialchars($_POST['ubicacion'] ?? '') ?>"
+                                           value="<?= ($_POST['ubicacion'] ?? '') ?>"
                                            placeholder="Dirección exacta del hotel">
                                 </div>
                             </div>
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="mb-3">
                                     <label class="form-label">Provincia <span class="text-danger">*</span></label>
                                     <input name="provincia" class="form-control" required 
-                                           value="<?= htmlspecialchars($_POST['provincia'] ?? '') ?>">
+                                           value="<?= ($_POST['provincia'] ?? '') ?>">
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="mb-3">
                             <label class="form-label">Autor (opcional)</label>
                             <input name="autor" class="form-control" 
-                                   value="<?= htmlspecialchars($_POST['autor'] ?? '') ?>"
+                                   value="<?= ($_POST['autor'] ?? '') ?>"
                                    placeholder="Nombre del autor o fuente">
                         </div>
                         <div class="mb-3">
@@ -209,11 +209,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Imágenes del Hotel <span class="text-danger">*</span></label>
-                            <input type="file" name="imagenes[]" class="form-control" multiple required
-                                   accept="image/*" id="imageInput">
-                            <div class="form-text">Formatos permitidos: JPG, PNG, GIF, WEBP. Máximo 5MB por imagen.</div>
-                            <div id="imagePreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+
+                            <div id="camposImagenes">
+                                <div class="input-con-preview mb-3">
+                                    <input type="file" name="imagenes[]" class="form-control" accept="image/*" required onchange="mostrarPrevia(event, this)">
+                                    <div class="preview-img mt-2"></div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="agregarCampoImagen()">➕ Agregar otra imagen</button>
+
+                            <div class="form-text mt-1">Puedes subir varias imágenes. Se permite JPG, PNG, GIF, WEBP. Máx. 5MB por imagen.</div>
                         </div>
+
+
 
                         <!-- Campo oculto para el estado de publicación -->
                         <input type="hidden" name="publicar" id="publicarField" value="0">

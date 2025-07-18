@@ -48,3 +48,51 @@ function toggleInfo(id) {
     el.style.display = 'none';
   }
 }
+
+function agregarCampoImagen() {
+    const contenedor = document.getElementById('camposImagenes');
+
+    // Crear contenedor del input + preview
+    const wrapper = document.createElement('div');
+    wrapper.className = 'input-con-preview mb-3';
+
+    // Crear input file
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'imagenes[]';
+    input.accept = 'image/*';
+    input.className = 'form-control';
+    input.required = true;
+    input.onchange = function(event) { mostrarPrevia(event, input); };
+
+    // Crear div para preview
+    const previewDiv = document.createElement('div');
+    previewDiv.className = 'preview-img mt-2';
+
+    // Añadir input y preview al wrapper
+    wrapper.appendChild(input);
+    wrapper.appendChild(previewDiv);
+
+    // Añadir todo al contenedor
+    contenedor.appendChild(wrapper);
+}
+
+function mostrarPrevia(event, input) {
+    const previewDiv = input.nextElementSibling; // div.preview-img
+    previewDiv.innerHTML = ''; // limpiar preview previa
+
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '5px';
+            previewDiv.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    }
+}

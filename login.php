@@ -1,33 +1,27 @@
 <?php
 session_start();
 require_once 'clases/conexion.php';
+require_once 'clases/sanitizar.php';
 
 $mensaje = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pdo = BD::conectar();
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+    
+    $email = Sanitizer::sanitizeEmail($_POST['email']);
+    $password = $_POST['password']; // No se sanea porque se usa directamente en password_verify
     
     if (empty($email) || empty($password)) {
         $mensaje = "Por favor complete todos los campos.";
+    } elseif (!Sanitizer::isValidEmail($email)) {
+        $mensaje = "Correo electrónico no válido.";
     } else {
         $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ? AND activo = 1");
         $stmt->execute([$email]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // DEBUG: Estas líneas te ayudarán a ver qué está pasando
-        echo "Email recibido: " . $email . "<br>";
-        echo "Contraseña escrita: '" . $password . "'<br>";
-        
-        if ($usuario) {
-            echo "Usuario encontrado: " . $usuario['nombre'] . "<br>";
-            echo "Hash en base de datos: '" . $usuario['password'] . "'<br>";
 
-            
+        if ($usuario) {
             if (password_verify($password, $usuario['password'])) {
-                echo "✅ La contraseña coincide<br>";
-                
                 // Guardamos datos en sesión
                 $_SESSION['usuario_id'] = $usuario['id'];
                 $_SESSION['usuario_nombre'] = $usuario['nombre'];
@@ -41,15 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 exit;
             } else {
-                echo "❌ La contraseña NO coincide<br>";
                 $mensaje = "Correo o contraseña incorrectos.";
             }
         } else {
-            echo "❌ Usuario no encontrado o inactivo<br>";
             $mensaje = "Correo o contraseña incorrectos.";
         }
-        
-        echo "<br><a href='login.php'>Volver a intentar</a>";
     }
 }
 ?>
