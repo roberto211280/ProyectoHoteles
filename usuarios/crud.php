@@ -19,75 +19,55 @@ if (isset($_GET['editar'])) {
 }
 
 // Guardar nuevo
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'] ?? '';
+    $accion = empty($id) ? 'registrar' : 'actualizar';
+
     $nombre = trim($_POST['nombre']);
     $email = trim($_POST['email']);
+    $cedula = trim($_POST['cedula']);
     $password = $_POST['password'];
     $rol = $_POST['rol'];
 
-    // Validaciones
-    if (empty($nombre) || empty($email) || empty($password)) {
+    // Validaciones comunes
+    if (empty($nombre) || empty($email) || ($accion === 'registrar' && empty($password))) {
         $mensaje = "❌ Todos los campos son obligatorios.";
-    } elseif (strlen($password) < 6) {
+    } elseif (!empty($password) && strlen($password) < 6) {
         $mensaje = "❌ La contraseña debe tener al menos 6 caracteres.";
     } else {
         try {
-            $resultado = $usuarioModel->crear($nombre, $email, $password, $rol);
+            switch ($accion) {
+                case 'registrar':
+                    $ok = $usuarioModel->crear($nombre, $email, $password, $rol, $cedula);
+                    $mensaje = $ok ? "✅ Usuario '$nombre' creado exitosamente." : "❌ Error al crear el usuario.";
+                    if ($ok) {
+                        $usuario = ['id' => '', 'nombre' => '', 'email' => '', 'activo' => 1, 'cedula' => '', 'rol' => 'usuario'];
+                        $modo = 'crear';
+                    }
+                    break;
 
-            if ($resultado) {
-                $mensaje = "✅ Usuario '$nombre' creado exitosamente.";
-                // Limpiar el formulario después de guardar
-                $usuario = [
-                    'id' => '',
-                    'nombre' => '',
-                    'email' => '',
-                    'activo' => 1
-                ];
-                $modo = 'crear';
+                case 'actualizar':
+                    $usuarioModel->actualizar($id, $nombre, $email, $cedula, !empty($password) ? $password : null, $rol);
+                    $mensaje = "✅ Usuario '$nombre' actualizado exitosamente.";
+                    $usuario = ['id' => '', 'nombre' => '', 'email' => '', 'activo' => 1, 'cedula' => '', 'rol' => 'usuario'];
+                    $modo = 'crear';
+                    break;
+
+                default:
+                    $mensaje = "❌ Acción no válida.";
+                    break;
             }
 
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
                 $mensaje = "❌ Error: El email '$email' ya está registrado.";
             } else {
-                $mensaje = "❌ Error al crear usuario: " . $e->getMessage();
+                $mensaje = "❌ Error en la base de datos: " . $e->getMessage();
             }
         }
     }
 }
 
-
-
-// Actualizar
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar'])) {
-    $id = $_POST['id'];
-    $nombre = trim($_POST['nombre']);
-    $email = trim($_POST['email']);
-    $password = !empty($_POST['password']) ? $_POST['password'] : null;
-    $rol = $_POST['rol'];
-    
-    // Validaciones
-    if (empty($nombre) || empty($email)) {
-        $mensaje = "❌ Nombre y email son obligatorios.";
-    } elseif (!empty($password) && strlen($password) < 6) {
-        $mensaje = "❌ La contraseña debe tener al menos 6 caracteres.";
-    } else {
-        try {
-            $resultado = $usuarioModel->actualizar($id, $nombre, $email, $password, $rol);
-            if ($resultado) {
-    header("Location: listar.php?mensaje=" . urlencode("✅ Usuario actualizado."));
-    exit();
-}
-
-        } catch (PDOException $e) {
-            if ($e->getCode() == 23000) {
-                $mensaje = "❌ Error: El email '$email' ya está registrado por otro usuario.";
-            } else {
-                $mensaje = "❌ Error al actualizar usuario: " . $e->getMessage();
-            }
-        }
-    }
-}
 
 // Cambiar estado
 if (isset($_GET['cambiar'])) {

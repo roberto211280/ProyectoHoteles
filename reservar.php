@@ -81,6 +81,13 @@ if (!$hotel) {
             </div>
         </div>
     </div>
+    <div class="row mt-4 mb-5">
+        <div class="col-12 text-center">
+            <a href="detalleHotel.php" class="btn btn-secondary">
+                ← Volver a la lista de hoteles
+            </a>
+        </div>
+    </div>
 </div>
 
 <?php include 'includes/footer.php'; ?>
